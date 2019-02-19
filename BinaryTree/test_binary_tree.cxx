@@ -10,18 +10,17 @@ TEST_CASE("first add", "binary tree") {
 
   binary_tree<int, std::string> bt;
   REQUIRE( bt.empty() );
-  REQUIRE( bt.count(key) == 0 );
+  REQUIRE( bt.count() == 0 );
 
   bt.insert(key, key_value);
   REQUIRE( ! bt.empty() );
-  REQUIRE( bt.count(key) == 1u );
+  REQUIRE( bt.count() == 1u );
 
-  auto n = bt.find(key);
+  std::string* n = bt.find(key);
   REQUIRE(n != nullptr);
-  REQUIRE(n->key_value == key_value);
+  REQUIRE(*n == key_value);
 
   bt.erase(key);
   REQUIRE( bt.empty() );
-  REQUIRE( bt.count(key) == 0 );
+  REQUIRE( bt.count() == 0 );
 }
-
