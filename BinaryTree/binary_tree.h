@@ -45,23 +45,31 @@ inline void binary_tree<Key, T>::erase(const Key& key, node<Key, T>* parent, nod
         return ;
     }
 
-    if(pnode->key == key) {
-        if (pnode->key > parent->key) {
-            parent->right = pnode->right;
-            parent->right->left = pnode->left;
-            delete pnode;
-        }
-        else if (pnode->key < parent->key) {
-            parent->left = pnode->left;
-            parent->left->right = pnode->right;
-            delete pnode;
-        }
-    }
-    else if (pnode->key > key) {
+    if (pnode->key > key) {
         erase(key, pnode, pnode->right);
     }
-    else if(pnode->key < key) {
+    else if (pnode->key < key) {
         erase(key, pnode, pnode->left);
+    }
+    else if (pnode->key == key) {
+        if (!pnode->left && !pnode->right) {
+            delete pnode;
+        }
+        else if (!pnode->left) {
+
+        }
+        else if (!pnode->right) {
+
+        }
+        else if (pnode->left && pnode->right) {
+
+        }
+        else if (pnode->left) {
+
+        }
+        else if (pnode->right) {
+
+        }
     }
 }
 
