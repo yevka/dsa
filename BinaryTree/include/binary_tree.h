@@ -1,5 +1,4 @@
 #include <cstddef>
-#include <iostream>
 
 template <typename Key,typename T>
 struct node {
@@ -125,6 +124,7 @@ template <typename Key, typename T>
 inline bool binary_tree<Key, T>::empty() const {
     return root_ ?  false : true;
 }
+
 
 
 template <typename Key, typename T>
