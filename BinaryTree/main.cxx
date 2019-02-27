@@ -24,5 +24,19 @@ int main() {
   bt.print_prefix_travers();
   std::cout << std::endl;
 
+  std::cout << std::endl;
+
+  bt.erase(1);
+
+//  bt.print_infix_travers();
+//  std::cout << std::endl;
+
+//  bt.print_postfix_travers();
+//  std::cout << std::endl;
+
+//  bt.print_prefix_travers();
+//  std::cout << std::endl;
+
+
   return 0;
 }

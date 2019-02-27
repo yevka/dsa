@@ -26,7 +26,8 @@ public:
   void print_postfix_travers() const;
 
 private:
-  void erase(const Key& key, node<Key, T> *&parent, node<Key, T> *&pnode);
+  void remove_node(node<Key, T>*& pnode);
+  void erase(const Key& key, node<Key, T>*& parent, node<Key, T>*& pnode);
   node<Key, T>* find(const Key& key, node<Key, T>* pnode) const;
   void insert(const Key& key, const T& value, node<Key, T>*& pnode);
 
@@ -38,6 +39,14 @@ private:
   node<Key, T>* root_;
   size_t count_;
 };
+
+
+
+template <typename Key, typename T>
+inline void binary_tree<Key, T>::remove_node(node<Key, T>*& pnode) {
+  delete pnode;
+  pnode = nullptr;
+}
 
 
 
@@ -99,7 +108,7 @@ inline void binary_tree<Key, T>::print_postfix_travers() const {
 
 
 template <typename Key, typename T>
-inline binary_tree<Key, T>::binary_tree() : root_(nullptr), count_{0} {
+inline binary_tree<Key, T>::binary_tree() : root_(nullptr), count_{0u} {
 
 }
 
@@ -107,28 +116,59 @@ inline binary_tree<Key, T>::binary_tree() : root_(nullptr), count_{0} {
 
 template <typename Key, typename T>
 inline void binary_tree<Key, T>::erase(const Key& key, node<Key, T>*& parent, node<Key, T>*& pnode) {
-  if (!parent || !pnode) {
+  if ( ! pnode) {
     return /*void*/;
   }
 
-  if (pnode->key > key) {
+  if (pnode->right && key > pnode->key) {
     erase(key, pnode, pnode->right);
   }
-  else if (pnode->key < key) {
+  else if (pnode->left && key < pnode->key) {
     erase(key, pnode, pnode->left);
   }
-  else if (pnode->key == key) {
-    if (pnode->key < parent->key) {
-      parent->left = pnode->left;
-      parent->left->right = pnode->right;
+  else if (key == pnode->key) {
+    if (!pnode->left && !pnode->right) {
+      remove_node(pnode);
+      --count_;
     }
-    else if (pnode->key > parent->key) {
-      parent->left = pnode->left;
-      parent->left->right = pnode->right;
+    else if (pnode->left && pnode->right) {
+      node<Key, T>* predecessor = pnode->right;
+      node<Key, T>* successor = pnode->right;
+      while (successor->left) {
+        predecessor = successor;
+        successor = successor->left;
+      }
+      predecessor->left = successor->right;
+      pnode->key = successor->key;
+      pnode->value = successor->value;
+      remove_node(successor);
+      remove_node(predecessor);
+      --count_;
     }
-    --count_;
-    delete pnode;
-    pnode = nullptr;
+    else if (pnode->left) {
+      const bool is_pnode_left_side = pnode->key < parent->key;
+      const bool is_pnode_right_side = pnode->key < parent->key;
+      if (is_pnode_left_side) {
+        parent->left = pnode->left;
+      }
+      else if (is_pnode_right_side) {
+        parent->right = pnode->right;
+      }
+      remove_node(pnode);
+      --count_;
+    }
+    else if (pnode->right) {
+      const bool is_pnode_left_side = pnode->key < parent->key;
+      const bool is_pnode_right_side = pnode->key < parent->key;
+      if (is_pnode_left_side) {
+        parent->left = pnode->left;
+      }
+      else if (is_pnode_right_side) {
+        parent->right = pnode->right;
+      }
+      remove_node(pnode);
+      --count_;
+    }
   }
 }
 
@@ -142,10 +182,10 @@ inline node<Key, T>* binary_tree<Key, T>::find(const Key& key, node<Key, T>* pno
   if (pnode->key == key) {
     return pnode;
   }
-  if (pnode->key > key) {
+  if (pnode->right && key > pnode->key) {
     find(key, pnode->right);
   }
-  else if (pnode->key < key) {
+  else if (pnode->left && key < pnode->key) {
     find(key, pnode->left);
   }
   return nullptr;
@@ -160,13 +200,11 @@ inline void binary_tree<Key, T>::insert(const Key& key, const T& value, node<Key
     ++count_;
     return /*void*/;
   }
-  if (pnode->key > key) {
-//    insert(key, value, pnode->right);
-    insert(key, value, pnode->left);
-  }
-  else if (pnode->key < key) {
-//    insert(key, value, pnode->left);
+  if (key > pnode->key) {
     insert(key, value, pnode->right);
+  }
+  else if (key < pnode->key) {
+    insert(key, value, pnode->left);
   }
   else if (pnode->key == key) {
     pnode->value = value;
@@ -194,14 +232,13 @@ inline void binary_tree<Key, T>::erase(const Key& key) {
   if (!root_) {
     return /*void*/;
   }
-
-  if (root_->key > key) {
+  if (key > root_->key) {
     erase(key, root_, root_->right);
   }
-  else if (root_->key < key) {
+  else if (key < root_->key) {
     erase(key, root_, root_->left);
   }
-  else if (root_->key == key) {
+  else if (key == root_->key) {
     erase(key, root_, root_);
   }
 }
