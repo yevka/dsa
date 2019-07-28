@@ -25,3 +25,6 @@ enable_testing()
 
 add_executable(test_swap test_swap.cpp)
 add_test(NAME swap COMMAND test_swap)
+
+add_executable(test_counting_sort test_counting_sort.cpp)
+add_test(NAME counting_sort COMMAND test_counting_sort)
