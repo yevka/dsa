@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <cstring>
+#include <exception>
 
 
 namespace yevka {
@@ -19,7 +20,13 @@ public:
     delete[] data_;
   }
 
+  T& at(const std::size_t& i);
+
+  const T& at(const std::size_t& i) const;
+
   void push_back(const T &val);
+
+  void pop_back();
 
   const T *data() const noexcept;
 
@@ -29,6 +36,23 @@ private:
   T *data_;
   const std::size_t kN = 2u;
 };
+
+
+
+template<typename T>
+T& vector<T>::at(const std::size_t& i) {
+  if (i > size_ - 1) throw std::out_of_range("out of range");
+  return data_[i];
+}
+
+
+
+template<typename T>
+const T& vector<T>::at(const std::size_t& i) const {
+  if (i > size_ - 1) throw std::out_of_range("out of range");
+  return data_[i];
+}
+
 
 
 template<typename T>
@@ -46,8 +70,19 @@ void vector<T>::push_back(const T &val) {
 }
 
 
+
+template<typename T>
+void vector<T>::pop_back() {
+  if (!data_ && size_ == 0) return; // todo throw exception
+  --size_;
+}
+
+
+
 template<typename T>
 const T *vector<T>::data() const noexcept {
+  T* diff = data_ - (capacity_ - size_);
+
   return data_;
 }
 

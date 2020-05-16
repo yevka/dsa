@@ -20,5 +20,6 @@ TEST_CASE("push_back", "vector") {
   REQUIRE(verifiable_data);
   for(int i = 0; i < 5 ; ++i) {
     REQUIRE(etalon_data[i] == verifiable_data[i]);
+    REQUIRE_NOTHROW(etalon.at(i) == verifiable.at(i));
   }
 }
