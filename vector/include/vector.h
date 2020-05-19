@@ -38,9 +38,6 @@ public:
   void clear() noexcept;
 
 private:
-  std::size_t calculate_growth(const size_t new_size) const;
-
-private:
   std::size_t capacity_;
   std::size_t size_;
   T *data_;
@@ -90,7 +87,7 @@ void vector<T>::push_back(const T &val) {
       T* tmp = new T[capacity_];
       memcpy(tmp, data_, capacity_ * sizeof(T));
       delete[] data_;
-      std::size_t new_capacity = calculate_growth(size_ + 1);
+      std::size_t new_capacity = capacity_ * kN;
       data_ = new T[new_capacity];
       memcpy(data_, tmp, capacity_ * sizeof(T));
       capacity_ = new_capacity;
@@ -119,21 +116,6 @@ const T *vector<T>::data() const noexcept {
 template<typename T>
 void vector<T>::clear() noexcept {
   size_ = 0;
-}
-
-
-
-template<typename T>
-std::size_t vector<T>::calculate_growth(const size_t new_size) const {
-  const std::size_t old = capacity();
-  if (old > std::numeric_limits<std::size_t>::max() - old / 2) {
-    return new_size; // geometric growth would overflow
-  }
-  const std::size_t geometric = old + old / 2;
-  if (geometric < new_size) {
-    return new_size; // geometric growth would be insufficient
-  }
-  return geometric; // geometric growth is sufficient
 }
 
 
