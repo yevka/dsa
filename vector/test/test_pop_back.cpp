@@ -6,7 +6,7 @@
 
 TEST_CASE("pop_back", "vector") {
   std::vector<int> etalon;
-  yevka::vector<int> verifiable;
+  dsa::vector<int> verifiable;
 
   for (int i = 0; i < 5; ++i) {
     etalon.push_back(i);

@@ -6,7 +6,7 @@
 #include <exception>
 
 
-namespace yevka {
+namespace dsa {
 
 template<typename T>
 class vector {
@@ -41,7 +41,7 @@ private:
 
 template<typename T>
 T& vector<T>::at(const std::size_t& i) {
-  if (i > size_ - 1) throw std::out_of_range("out of range");
+  if (size_ == 0u || i > size_ - 1u) throw std::out_of_range("out of range");
   return data_[i];
 }
 
@@ -49,7 +49,7 @@ T& vector<T>::at(const std::size_t& i) {
 
 template<typename T>
 const T& vector<T>::at(const std::size_t& i) const {
-  if (i > size_ - 1) throw std::out_of_range("out of range");
+  if (size_ == 0u || i > size_ - 1u) throw std::out_of_range("out of range");
   return data_[i];
 }
 
@@ -87,6 +87,6 @@ const T *vector<T>::data() const noexcept {
 }
 
 
-} // namespace yevka
+} // namespace dsa
 
 #endif // VECTOR_H_
