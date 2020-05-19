@@ -86,7 +86,7 @@ void vector<T>::push_back(const T &val) {
     capacity_ = 1;
   } else {
     std::size_t unused_capacity = capacity_ - size_;
-    if (unused_capacity - 1 == 0) {
+    if (unused_capacity == 0) {
       T* tmp = new T[capacity_];
       memcpy(tmp, data_, capacity_ * sizeof(T));
       delete[] data_;
