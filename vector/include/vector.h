@@ -30,6 +30,8 @@ public:
 
   const T *data() const noexcept;
 
+  void clear();
+
 private:
   std::size_t capacity_;
   std::size_t size_;
@@ -81,9 +83,13 @@ void vector<T>::pop_back() {
 
 template<typename T>
 const T *vector<T>::data() const noexcept {
-  T* diff = data_ - (capacity_ - size_);
-
   return data_;
+}
+
+
+template<typename T>
+void vector<T>::clear() {
+  
 }
 
 
