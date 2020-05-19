@@ -104,7 +104,7 @@ void vector<T>::push_back(const T &val) {
 
 template<typename T>
 void vector<T>::pop_back() {
-  if (!data_ && size_ == 0) return; // todo throw exception
+  if (size_ == 0) return; // todo throw exception
   --size_;
 }
 

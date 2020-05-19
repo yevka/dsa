@@ -17,8 +17,13 @@ TEST_CASE("pop_back", "vector") {
     sample.pop_back();
     verifiable.pop_back();
   }
-
   REQUIRE_NOTHROW(sample.at(0) == verifiable.at(0));
   REQUIRE_THROWS(sample.at(1));
   REQUIRE_THROWS(verifiable.at(1));
+
+  for (int i = 0; i < 42; ++i) {
+    // sample.pop_back(); // ub
+    verifiable.pop_back(); // is correct
+    REQUIRE(verifiable.size() <= verifiable.capacity());
+  }
 }
