@@ -12,14 +12,13 @@ namespace dsa {
 template<typename T>
 class vector {
 public:
-  vector() :
-          capacity_{0},
-          size_{0},
-          data_{new T[capacity_]} {}
+  vector();
 
-  ~vector() {
-    delete[] data_;
-  }
+  ~vector();
+
+  vector(const vector<T>& other);
+
+  vector<T>& operator = (const vector<T>& other);
 
   std::size_t capacity() const;
 
@@ -37,12 +36,52 @@ public:
 
   void clear() noexcept;
 
+
+private:
+  void init(const vector<T>& other);
+
 private:
   std::size_t capacity_;
   std::size_t size_;
   T *data_;
   const std::size_t kN = 2u;
 };
+
+
+
+template<typename T>
+vector<T>::vector() : capacity_{}, size_{}, data_{nullptr} {
+
+}
+
+
+
+template<typename T>
+vector<T>::~vector() {
+  capacity_ = 0;
+  size_ = 0;
+  delete[] data_;
+  data_ = nullptr;
+}
+
+
+
+template<typename T>
+vector<T>::vector(const vector<T>& other) {
+  init(other);
+}
+
+
+
+template<typename T>
+vector<T>& vector<T>::operator = (const vector<T>& other) {
+  if (this != &other) {
+    delete[] data_;
+    init(other);
+  }
+  return *this;
+}
+
 
 
 
@@ -116,6 +155,16 @@ const T *vector<T>::data() const noexcept {
 template<typename T>
 void vector<T>::clear() noexcept {
   size_ = 0;
+}
+
+
+
+template<typename T>
+void vector<T>::init(const vector<T>& other) {
+  capacity_ = other.capacity_;
+  data_ = new T[capacity_];
+  size_ = other.size_;
+  memcpy(data_, other.data_, size_ * sizeof(T));
 }
 
 
