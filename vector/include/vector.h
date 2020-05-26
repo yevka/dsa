@@ -36,6 +36,11 @@ public:
 
   void clear() noexcept;
 
+  std::size_t max_size() const;
+
+  void reserve(std::size_t new_cap);
+
+  bool empty() const;
 
 private:
   void init(const vector<T>& other);
@@ -165,6 +170,40 @@ void vector<T>::init(const vector<T>& other) {
   data_ = new T[capacity_];
   size_ = other.size_;
   memcpy(data_, other.data_, size_ * sizeof(T));
+}
+
+
+
+template<typename T>
+std::size_t vector<T>::max_size() const {
+  return (std::numeric_limits<size_t>::max() / sizeof(T)) - 1;
+}
+
+
+
+template<typename T>
+void vector<T>::reserve(std::size_t new_cap) {
+  if (new_cap  > max_size()) throw std::length_error("new_cap  > max_size()");
+  if (new_cap > capacity_) {
+    if (capacity_ > 0) {
+      T* tmp = new T[capacity_];
+      memcpy(tmp, data_, size_ * sizeof(T));
+      delete[] data_;
+      data_ = new T[new_cap];
+      memcpy(data_, tmp, size_ * sizeof(T));
+      capacity_ = new_cap;
+      delete[] tmp;
+    }
+    capacity_ = new_cap;
+    data_ = new T[capacity_];
+  }
+}
+
+
+
+template<typename T>
+bool vector<T>::empty() const {
+  return size_ == 0;
 }
 
 

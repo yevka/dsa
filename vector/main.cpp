@@ -1,5 +1,7 @@
 #include <iostream>
 #include "vector.h"
+#include <vector>
+#include <climits>
 
 
 int main(int argc, char** argv) {
