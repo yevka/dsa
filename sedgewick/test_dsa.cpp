@@ -1,6 +1,5 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
-#include "swap.h"
 
 #include <vector>
 #include <utility>
@@ -78,7 +77,7 @@ TEST_CASE("program 1.1: connectivity problem", "sedgewick") {
             ,false // 10 1
     };
 
-    Graph11<11> g;
+    Graph<11> g;
     for(int i = 0; i < pairs.size() ; ++i) {
         int p = pairs.at(i).first;
         int q = pairs.at(i).second;
