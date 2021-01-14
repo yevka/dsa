@@ -6,22 +6,26 @@
 #include <utility>
 
 
-TEST_CASE("swap", "alg") {
-  int a = 1;
-  int b = 2;
-  dsa::swap(a, b);
-  REQUIRE(a == 2);
-  REQUIRE(b == 1);
-}
-
 template<int N = 10>
-class Graph11 {
+class Graph {
 public:
-    Graph11() : id(N,0) {
+    Graph() : id(N, 0) {
         for(int i = 0; i < N ; ++i)
             id[i] = i;
     }
 
+    bool insert(int p, int q) {
+        if (!find(p, q)) {
+            union_(p, q);
+            return false;
+        }
+        return true;
+    }
+
+private:
+    std::vector<int> id;
+
+private:
     bool find(int p, int q) {
         // 0 1 2 3 4 5 6 7 8 9 - id
         // 0 1 2 3 4 5 6 7 8 9 - 1
@@ -37,19 +41,9 @@ public:
             }
         }
     }
-
-    bool insert(int p, int q) {
-        if (!find(p, q)) { // 1 * N
-            union_(p, q);
-            return false;
-        }
-        return true;
-    }
-private:
-    std::vector<int> id;
 };
 
-TEST_CASE("connectivity problem", "alg") {
+TEST_CASE("program 1.1: connectivity problem", "sedgewick") {
     std::vector<std::pair<int, int>> pairs = {
             {3, 4},
             {4, 9},
@@ -67,7 +61,7 @@ TEST_CASE("connectivity problem", "alg") {
             {10,1}
     };
 
-    const std::vector<int> sample = {
+    const std::vector<int> is_connect = {
              false // 3 4
             ,false // 4 9
             ,false // 8 0
@@ -89,6 +83,6 @@ TEST_CASE("connectivity problem", "alg") {
         int p = pairs.at(i).first;
         int q = pairs.at(i).second;
         std::cout << p << " " << q << std::endl;
-        REQUIRE(sample.at(i) == g.insert(p, q));
+        REQUIRE(is_connect.at(i) == g.insert(p, q));
     }
 }
