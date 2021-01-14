@@ -14,38 +14,45 @@ TEST_CASE("swap", "alg") {
   REQUIRE(b == 1);
 }
 
-
-class Graph {
+template<int N = 10>
+class Graph11 {
 public:
-    Graph() = default;
-
-    std::vector<int> set(int p, int q) {
-        std::vector<int> ret;
-        if (find(p, q)) {
-
-        } else {
-            union_(p, q);
-        }
-        return ret;
+    Graph11() : id(N,0) {
+        for(int i = 0; i < N ; ++i)
+            id[i] = i;
     }
 
-private:
-    std::vector<std::vector<int>> pairs;
-
-private:
     bool find(int p, int q) {
-        return false;
+        // 0 1 2 3 4 5 6 7 8 9 - id
+        // 0 1 2 3 4 5 6 7 8 9 - 1
+        // 0 1 2 4 4 5 6 7 8 9 - 2
+        return id[p] == id[q];
     }
 
-    void union_(int p, int q) {}
-};
+    void union_(int p, int q) {
+        const int t = id[p];
+        for (int i = 0; i < N; i++) {
+            if (t == id[i]) {
+                id[i] = id[q];
+            }
+        }
+    }
 
+    bool insert(int p, int q) {
+        if (!find(p, q)) { // 1 * N
+            union_(p, q);
+            return false;
+        }
+        return true;
+    }
+private:
+    std::vector<int> id;
+};
 
 TEST_CASE("connectivity problem", "alg") {
     std::vector<std::pair<int, int>> pairs = {
             {3, 4},
             {4, 9},
-            {8, 0},
             {8, 0},
             {2, 3},
             {5, 6},
@@ -55,28 +62,33 @@ TEST_CASE("connectivity problem", "alg") {
             {4, 8},
             {5, 6},
             {0, 2},
-            {6, 1}
+            {6, 1},
+            {0, 8},
+            {10,1}
     };
 
-    const std::vector<std::vector<int>> sample = {
-            {3, 4},
-            {4, 9},
-            {8, 0},
-            {8, 0},
-            {2, 3},
-            {5, 6},
-            {2, 3, 4, 9},
-            {5, 9},
-            {7, 3},
-            {4, 8},
-            {5, 6},
-            {0, 8, 4, 3, 2},
-            {6, 1}
+    const std::vector<int> sample = {
+             false // 3 4
+            ,false // 4 9
+            ,false // 8 0
+            ,false // 2 3
+            ,false // 5 6
+            ,true  // 2 9
+            ,false // 5 9
+            ,false // 7 3
+            ,false // 4 8
+            ,true  // 5 6
+            ,true  // 0 2
+            ,false // 6 1
+            ,true  // 0 8
+            ,false // 10 1
     };
 
-    Graph graph;
+    Graph11<11> g;
     for(int i = 0; i < pairs.size() ; ++i) {
-        auto result = graph.set(pairs.at(i).first, pairs.at(i).second);
-        REQUIRE(result == sample.at(i));
+        int p = pairs.at(i).first;
+        int q = pairs.at(i).second;
+        std::cout << p << " " << q << std::endl;
+        REQUIRE(sample.at(i) == g.insert(p, q));
     }
 }
