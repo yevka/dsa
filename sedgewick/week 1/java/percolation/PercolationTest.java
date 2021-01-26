@@ -1,0 +1,21 @@
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class PercolationTest {
+
+    @Test
+    void firstTest() {
+        Percolation percolation = new Percolation(2);
+        percolation.open(1, 1);
+        assertEquals(false, percolation.isOpen(1, 1));
+        assertEquals(true, percolation.isFull(1, 1));
+
+        percolation.open(1, 2);
+        assertEquals(false, percolation.isOpen(1, 2));
+        assertEquals(true, percolation.isFull(1, 2));
+
+        assertEquals(0, percolation.numberOfOpenSites());
+
+        assertEquals(true, percolation.percolates());
+    }
+}
