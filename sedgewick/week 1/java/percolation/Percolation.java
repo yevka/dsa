@@ -4,12 +4,20 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 // 1 - block - black
 // 2 - full  - blue
 
+class Point
+{
+    public int x;
+    public int y;
+};
+
 public class Percolation {
     private WeightedQuickUnionUF g;
     private int matrix[][];
     private int openSites;
     private int sizeMatrix;
     private boolean isPercolates;
+
+    private int rootNode[];
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
@@ -22,6 +30,12 @@ public class Percolation {
                 matrix[i][j] = 1;
         openSites = 0;
         isPercolates = false;
+
+        rootNode = new int[sizeMatrix - 2];
+        for(int j = 1;  j < sizeMatrix - 1; ++j) {
+            int currSite = xyTo1D(1, j);
+            rootNode[0] = currSite;
+        }
     }
 
     // opens the site (row, col) if it is not open already
@@ -58,6 +72,17 @@ public class Percolation {
                     }
                 }
             }
+
+            for(int i = 1;  i < sizeMatrix - 1; ++i) {
+                for(int j = 1;  j < sizeMatrix - 1; ++j) {
+                    int currSite = xyTo1D(i, j);
+                    for(int k = 0;  k < sizeMatrix - 2; ++k) {
+                        if (g.connected(currSite, rootNode[k])) {
+                            matrix[i][j] = 2;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -90,6 +115,13 @@ public class Percolation {
 
     private int xyTo1D(int x, int y) {
         return x * sizeMatrix + y + 1;
+    }
+
+    private Point nToXy(int n) {
+        Point p = new Point();
+        p.x = 0;
+        p.y = 0;
+        return p;
     }
 
     private void checkIndex(int row, int col) {
