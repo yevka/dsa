@@ -4,12 +4,6 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 // 1 - block - black
 // 2 - full  - blue
 
-class Point
-{
-    public int x;
-    public int y;
-};
-
 public class Percolation {
     private WeightedQuickUnionUF g;
     private int matrix[][];
@@ -17,7 +11,8 @@ public class Percolation {
     private int sizeMatrix;
     private boolean isPercolates;
 
-    private int rootNode[];
+    private int rootNodes[];
+    private int leafNodes[];
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
@@ -31,10 +26,20 @@ public class Percolation {
         openSites = 0;
         isPercolates = false;
 
-        rootNode = new int[sizeMatrix - 2];
+        rootNodes = new int[sizeMatrix - 2];
+        int i = 0;
         for(int j = 1;  j < sizeMatrix - 1; ++j) {
             int currSite = xyTo1D(1, j);
-            rootNode[0] = currSite;
+            rootNodes[i] = currSite;
+            i += 1;
+        }
+
+        i = 0;
+        leafNodes = new int[sizeMatrix - 2];
+        for(int j = 1;  j < sizeMatrix - 1; ++j) {
+            int currSite = xyTo1D(sizeMatrix - 1, j);
+            leafNodes[i] = currSite;
+            i += 1;
         }
     }
 
@@ -44,41 +49,34 @@ public class Percolation {
 
         if (matrix[row][col] == 1) {
             matrix[row][col] = 0;
-            for (int i = 1; i < sizeMatrix - 1; ++i) {
-                for (int j = 1; j < sizeMatrix - 1; ++j) {
-                    if (isOpen(i, j)) {
-                        int currSite = xyTo1D(i, j);
-                        // left
-                        if (isOpen(i, j - 1)) {
-                            int leftSite = xyTo1D(i, j - 1);
-                            g.union(currSite, leftSite);
-                        }
-                        // right
-                        if (isOpen(i, j + 1)) {
-                            int rightSite = xyTo1D(i, j + 1);
-                            g.union(currSite, rightSite);
-                        }
-                        // top
-                        if (isOpen(i + 1, j)) {
-                            int topSite = xyTo1D(i + 1, j);
-                            g.union(currSite, topSite);
-
-                        }
-                        // bottom
-                        if (isOpen(i - 1, j)) {
-                            int bottomSite = xyTo1D(i - 1, j);
-                            g.union(currSite, bottomSite);
-                        }
-                    }
-                }
+            openSites += 1;
+            int currSite = xyTo1D(row, col);
+            g.union(currSite, currSite);
+            if (isOpen(row, col - 1) || isFull(row, col - 1)) { // left
+                int leftSite = xyTo1D(row, col - 1);
+                g.union(currSite, leftSite);
+            }
+            if (isOpen(row, col + 1) || isFull(row, col + 1)) { // right
+                int rightSite = xyTo1D(row, col + 1);
+                g.union(currSite, rightSite);
+            }
+            if (isOpen(row - 1, col) || isFull(row -1, col)) { // top
+                int topSite = xyTo1D(row - 1, col);
+                g.union(currSite, topSite);
+            }
+            if (isOpen(row + 1, col) || isFull(row + 1, col)) { // bottom
+                int bottomSite = xyTo1D(row + 1, col);
+                g.union(currSite, bottomSite);
             }
 
             for(int i = 1;  i < sizeMatrix - 1; ++i) {
                 for(int j = 1;  j < sizeMatrix - 1; ++j) {
-                    int currSite = xyTo1D(i, j);
+                    currSite = xyTo1D(i, j);
                     for(int k = 0;  k < sizeMatrix - 2; ++k) {
-                        if (g.connected(currSite, rootNode[k])) {
+                        int rootNode = rootNodes[k];
+                        if (isOpen(i, j) && g.connected(currSite, rootNode)) {
                             matrix[i][j] = 2;
+                            openSites -= 1;
                         }
                     }
                 }
@@ -105,6 +103,16 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
+        for(int leafNodeId = 0;  leafNodeId < sizeMatrix - 2; ++leafNodeId) {
+            int leafNode = leafNodes[leafNodeId];
+            for(int rootNodeId = 0;  rootNodeId < sizeMatrix - 2; ++rootNodeId) {
+                int rootNode = rootNodes[rootNodeId];
+                if (g.connected(rootNode, leafNode)) {
+                    isPercolates = true;
+                    break;
+                }
+            }
+        }
         return isPercolates;
     }
 
@@ -114,14 +122,7 @@ public class Percolation {
     }
 
     private int xyTo1D(int x, int y) {
-        return x * sizeMatrix + y + 1;
-    }
-
-    private Point nToXy(int n) {
-        Point p = new Point();
-        p.x = 0;
-        p.y = 0;
-        return p;
+        return (x * sizeMatrix) + y;
     }
 
     private void checkIndex(int row, int col) {

@@ -16,6 +16,6 @@ public class PercolationTest {
 
         assertEquals(0, percolation.numberOfOpenSites());
 
-        assertEquals(true, percolation.percolates());
+        assertEquals(false, percolation.percolates());
     }
 }
