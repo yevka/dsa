@@ -25,7 +25,7 @@ import java.awt.Font;
 public class PercolationVisualizer {
 
     // delay in miliseconds (controls animation speed)
-    private static final int DELAY = 1000;
+    private static final int DELAY = 0;
 
     // draw n-by-n percolation systemc
     public static void draw(Percolation perc, int n) {
@@ -75,14 +75,14 @@ public class PercolationVisualizer {
         Percolation perc = new Percolation(n);
         draw(perc, n);
         StdDraw.show();
-        //StdDraw.pause(DELAY);
+        StdDraw.pause(DELAY);
         while (!in.isEmpty()) {
             int i = in.readInt();
             int j = in.readInt();
             perc.open(i, j);
             draw(perc, n);
             StdDraw.show();
-            //StdDraw.pause(DELAY);
+            StdDraw.pause(DELAY);
         }
         System.out.println("the end");
     }
