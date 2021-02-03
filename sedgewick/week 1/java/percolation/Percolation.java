@@ -17,16 +17,13 @@ public class Percolation {
         g = new WeightedQuickUnionUF(sizeMatrix * sizeMatrix);
         matrix = new boolean[sizeMatrix][sizeMatrix];
         openSites = 0;
-
         rootNodes = new int[sizeMatrix - 2];
         leafNodes = new int[sizeMatrix - 2];
-        int i = 0;
-        for(int j = 1;  j < sizeMatrix - 1; ++j) {
-            int rootSite = xyTo1D(1, j);
-            rootNodes[i] = rootSite;
-            int leafSite = xyTo1D(sizeMatrix - 1, j);
-            leafNodes[i] = leafSite;
-            i += 1;
+        int rootSite = xyTo1D(1, 1);
+        int leafSite = xyTo1D(sizeMatrix - 1, 1);
+        for(int j = 0;  j < sizeMatrix - 2; ++j) {
+            rootNodes[j] = rootSite++;
+            leafNodes[j] = leafSite++;
         }
     }
 
