@@ -34,7 +34,6 @@ public class Percolation {
             matrix[row][col] = true;
             openSites += 1;
             int currSite = xyTo1D(row, col);
-            g.union(currSite, currSite);
             if (isOpen(row, col - 1)) { // left
                 int leftSite = xyTo1D(row, col - 1);
                 g.union(currSite, leftSite);

@@ -25,7 +25,7 @@ import java.awt.Font;
 public class PercolationVisualizer {
 
     // delay in miliseconds (controls animation speed)
-    private static final int DELAY = 0;
+    private static final int DELAY = 1000;
 
     // draw n-by-n percolation systemc
     public static void draw(Percolation perc, int n) {
