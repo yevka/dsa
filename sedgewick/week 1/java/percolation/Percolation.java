@@ -1,3 +1,4 @@
+import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 
@@ -6,14 +7,14 @@ public class Percolation {
     private WeightedQuickUnionUF g;
     private boolean matrix[][];
     private int openSites;
-
     private int rootNodes[];
     private int leafNodes[];
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
         sizeMatrix = n + 2;
-        if (sizeMatrix <= 0) throw new IllegalArgumentException("N must be > 0");
+        if (sizeMatrix <= 0)
+            throw new IllegalArgumentException("N must be > 0");
         g = new WeightedQuickUnionUF(sizeMatrix * sizeMatrix);
         matrix = new boolean[sizeMatrix][sizeMatrix];
         openSites = 0;
@@ -55,18 +56,18 @@ public class Percolation {
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
-        // checkIndex(row, col);
+        checkIndex(row, col);
         return matrix[row][col];
     }
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
-        // checkIndex(row, col);
+        checkIndex(row, col);
         if (isOpen(row, col)) {
             int currSite = xyTo1D(row, col);
             for(int rootNodeId = 0;  rootNodeId < sizeMatrix - 2; ++rootNodeId) {
                 int rootNode = rootNodes[rootNodeId];
-                if (g.connected(currSite, rootNode)) {
+                if (connected(currSite, rootNode)) {
                     return true;
                 }
             }
@@ -85,7 +86,7 @@ public class Percolation {
             int leafNode = leafNodes[leafNodeId];
             for(int rootNodeId = 0;  rootNodeId < sizeMatrix - 2; ++rootNodeId) {
                 int rootNode = rootNodes[rootNodeId];
-                if (g.connected(leafNode, rootNode)) {
+                if (connected(leafNode, rootNode)) {
                     return true;
                 }
             }
@@ -103,10 +104,18 @@ public class Percolation {
     }
 
     private void checkIndex(int row, int col) {
-        if (row < 1) throw new IllegalArgumentException("row must be >= 1");
-        if (col < 1) throw new IllegalArgumentException("col must be >= 1");
-        if (row > sizeMatrix - 2) throw new IllegalArgumentException("row must be <= N");
-        if (col > sizeMatrix - 2) throw new IllegalArgumentException("col must be <= N");
+        if (row < 0)
+            throw new IllegalArgumentException("row must be >= 1");
+        if (col < 0)
+            throw new IllegalArgumentException("col must be >= 1");
+        if (row > sizeMatrix + 1)
+            throw new IllegalArgumentException("row must be <= N");
+        if (col > sizeMatrix + 1)
+            throw new IllegalArgumentException("col must be <= N");
+    }
+
+    private boolean connected(int p, int q) {
+        return g.find(p) == g.find(q);
     }
 
 }
