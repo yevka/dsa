@@ -2,11 +2,10 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 
 public class Percolation {
+    private int sizeMatrix;
     private WeightedQuickUnionUF g;
     private boolean matrix[][];
     private int openSites;
-    private int sizeMatrix;
-    private boolean isPercolates;
 
     private int rootNodes[];
     private int leafNodes[];
@@ -17,25 +16,16 @@ public class Percolation {
         if (sizeMatrix <= 0) throw new IllegalArgumentException("N must be > 0");
         g = new WeightedQuickUnionUF(sizeMatrix * sizeMatrix);
         matrix = new boolean[sizeMatrix][sizeMatrix];
-        for (int i = 0; i < sizeMatrix; ++i)
-            for (int j = 0; j < sizeMatrix ; ++j)
-                matrix[i][j] = true;
         openSites = 0;
-        isPercolates = false;
 
         rootNodes = new int[sizeMatrix - 2];
+        leafNodes = new int[sizeMatrix - 2];
         int i = 0;
         for(int j = 1;  j < sizeMatrix - 1; ++j) {
-            int currSite = xyTo1D(1, j);
-            rootNodes[i] = currSite;
-            i += 1;
-        }
-
-        i = 0;
-        leafNodes = new int[sizeMatrix - 2];
-        for(int j = 1;  j < sizeMatrix - 1; ++j) {
-            int currSite = xyTo1D(sizeMatrix - 1, j);
-            leafNodes[i] = currSite;
+            int rootSite = xyTo1D(1, j);
+            rootNodes[i] = rootSite;
+            int leafSite = xyTo1D(sizeMatrix - 1, j);
+            leafNodes[i] = leafSite;
             i += 1;
         }
     }
@@ -43,8 +33,8 @@ public class Percolation {
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
         checkIndex(row, col);
-        if (matrix[row][col]) {
-            matrix[row][col] = false;
+        if (!isOpen(row, col)) {
+            matrix[row][col] = true;
             openSites += 1;
             int currSite = xyTo1D(row, col);
             g.union(currSite, currSite);
@@ -70,7 +60,7 @@ public class Percolation {
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
         // checkIndex(row, col);
-        return !matrix[row][col];
+        return matrix[row][col];
     }
 
     // is the site (row, col) full?
@@ -99,13 +89,12 @@ public class Percolation {
             int leafNode = leafNodes[leafNodeId];
             for(int rootNodeId = 0;  rootNodeId < sizeMatrix - 2; ++rootNodeId) {
                 int rootNode = rootNodes[rootNodeId];
-                if (g.connected(rootNode, leafNode)) {
-                    isPercolates = true;
-                    break;
+                if (g.connected(leafNode, rootNode)) {
+                    return true;
                 }
             }
         }
-        return isPercolates;
+        return false;
     }
 
     // test client (optional)
