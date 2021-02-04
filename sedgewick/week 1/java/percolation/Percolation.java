@@ -85,6 +85,8 @@ public class Percolation {
     public boolean percolates() {
         if (isPercolate) // cached value
             return true;
+        if (openSites < sizeMatrix - 2)
+            return false;
         for(int leafNodeId = 0;  leafNodeId < sizeMatrix - 2; ++leafNodeId) {
             int leafNode = leafNodes[leafNodeId];
             for(int rootNodeId = 0;  rootNodeId < sizeMatrix - 2; ++rootNodeId) {
@@ -95,7 +97,7 @@ public class Percolation {
                 }
             }
         }
-        return isPercolate;
+        return false;
     }
 
     // test client (optional)
