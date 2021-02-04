@@ -4,10 +4,10 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
     private int sizeMatrix;
     private WeightedQuickUnionUF g;
-    private boolean matrix[][];
+    private boolean[][] matrix;
     private int openSites;
-    private int rootNodes[];
-    private int leafNodes[];
+    private int[] rootNodes;
+    private int[] leafNodes;
     private boolean isPercolate;
 
     // creates n-by-n grid, with all sites initially blocked
@@ -87,9 +87,14 @@ public class Percolation {
             return true;
         if (openSites < sizeMatrix - 2)
             return false;
+
         for(int leafNodeId = 0;  leafNodeId < sizeMatrix - 2; ++leafNodeId) {
+            if (!isOpen(sizeMatrix - 2, leafNodeId + 1))
+                continue;
             int leafNode = leafNodes[leafNodeId];
             for(int rootNodeId = 0;  rootNodeId < sizeMatrix - 2; ++rootNodeId) {
+                if (!isOpen(1, rootNodeId + 1))
+                    continue;
                 int rootNode = rootNodes[rootNodeId];
                 if (connected(leafNode, rootNode)) {
                     isPercolate = true;

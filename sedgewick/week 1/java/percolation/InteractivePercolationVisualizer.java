@@ -25,8 +25,8 @@ public class InteractivePercolationVisualizer {
         StdOut.println(n);
 
         StdDraw.enableDoubleBuffering();
-        Percolation perc = new Percolation(n);
-        PercolationVisualizer.draw(perc, n);
+        Percolation percolation = new Percolation(n);
+        PercolationVisualizer.draw(percolation, n);
         StdDraw.show();
 
         while (true) {
@@ -44,14 +44,14 @@ public class InteractivePercolationVisualizer {
 
                 // open site (i, j) provided it's in bounds
                 if (i >= 1 && i <= n && j >= 1 && j <= n) {
-                    if (!perc.isOpen(i, j)) { 
+                    if (!percolation.isOpen(i, j)) {
                         StdOut.println(i + " " + j);
                     }
-                    perc.open(i, j);
+                    percolation.open(i, j);
                 }
 
                 // draw n-by-n percolation system
-                PercolationVisualizer.draw(perc, n);
+                PercolationVisualizer.draw(percolation, n);
                 StdDraw.show();
             }
 

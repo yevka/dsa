@@ -7,7 +7,7 @@
  *  From that file, it
  *
  *    - Reads the grid size n of the percolation system.
- *    - Creates an n-by-n grid of sites (intially all blocked)
+ *    - Creates an n-by-n grid of sites (initially all blocked)
  *    - Reads in a sequence of sites (row i, column j) to open.
  *
  *  After each site is opened, it draws full sites in light blue,
@@ -24,11 +24,11 @@ import java.awt.Font;
 
 public class PercolationVisualizer {
 
-    // delay in miliseconds (controls animation speed)
-    private static final int DELAY = 0;
+    // delay in milliseconds (controls animation speed)
+    private static final int DELAY = 100;
 
     // draw n-by-n percolation systemc
-    public static void draw(Percolation perc, int n) {
+    public static void draw(Percolation percolation, int n) {
         StdDraw.clear();
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.setXscale(-0.05 * n, 1.05 * n);
@@ -39,10 +39,10 @@ public class PercolationVisualizer {
         int opened = 0;
         for (int row = 1; row <= n; row++) {
             for (int col = 1; col <= n; col++) {
-                if (perc.isFull(row, col)) {
+                if (percolation.isFull(row, col)) {
                     StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
                     opened++;
-                } else if (perc.isOpen(row, col)) {
+                } else if (percolation.isOpen(row, col)) {
                     StdDraw.setPenColor(StdDraw.WHITE);
                     opened++;
                 } else {
@@ -56,7 +56,7 @@ public class PercolationVisualizer {
         StdDraw.setFont(new Font("SansSerif", Font.PLAIN, 12));
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.text(0.25 * n, -0.025 * n, opened + " open sites");
-        if (perc.percolates()) {
+        if (percolation.percolates()) {
             StdDraw.text(0.75 * n, -0.025 * n, "percolates");
         }
         else {
@@ -72,17 +72,17 @@ public class PercolationVisualizer {
         StdDraw.enableDoubleBuffering();
 
         // repeatedly read in sites to open and draw resulting system
-        Percolation perc = new Percolation(n);
-        draw(perc, n);
+        Percolation percolation = new Percolation(n);
+        draw(percolation, n);
         StdDraw.show();
-        StdDraw.pause(DELAY);
+        // StdDraw.pause(DELAY);
         while (!in.isEmpty()) {
             int i = in.readInt();
             int j = in.readInt();
-            perc.open(i, j);
-            draw(perc, n);
+            percolation.open(i, j);
+            draw(percolation, n);
             StdDraw.show();
-            StdDraw.pause(DELAY);
+            // StdDraw.pause(DELAY);
         }
         System.out.println("the end");
     }
