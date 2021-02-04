@@ -1,4 +1,3 @@
-import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 
@@ -9,6 +8,7 @@ public class Percolation {
     private int openSites;
     private int rootNodes[];
     private int leafNodes[];
+    private boolean isPercolate;
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
@@ -21,11 +21,12 @@ public class Percolation {
         rootNodes = new int[sizeMatrix - 2];
         leafNodes = new int[sizeMatrix - 2];
         int rootSite = xyTo1D(1, 1);
-        int leafSite = xyTo1D(sizeMatrix - 1, 1);
+        int leafSite = xyTo1D(sizeMatrix - 2, 1);
         for(int j = 0;  j < sizeMatrix - 2; ++j) {
             rootNodes[j] = rootSite++;
             leafNodes[j] = leafSite++;
         }
+        isPercolate = false;
     }
 
     // opens the site (row, col) if it is not open already
@@ -82,16 +83,19 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
+        if (isPercolate) // cached value
+            return true;
         for(int leafNodeId = 0;  leafNodeId < sizeMatrix - 2; ++leafNodeId) {
             int leafNode = leafNodes[leafNodeId];
             for(int rootNodeId = 0;  rootNodeId < sizeMatrix - 2; ++rootNodeId) {
                 int rootNode = rootNodes[rootNodeId];
                 if (connected(leafNode, rootNode)) {
+                    isPercolate = true;
                     return true;
                 }
             }
         }
-        return false;
+        return isPercolate;
     }
 
     // test client (optional)
