@@ -6,8 +6,8 @@ public class Percolation {
     private final WeightedQuickUnionUF g;
     private boolean[][] matrix;
     private int openSites;
-    private int virtualTopSite;
-    private int virtualBottomSite;
+    private final int virtualTopSite;
+    private final int virtualBottomSite;
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
@@ -18,7 +18,7 @@ public class Percolation {
         matrix = new boolean[sizeMatrix][sizeMatrix];
         openSites = 0;
         virtualTopSite = 0;
-        virtualBottomSite = sizeMatrix + 1;
+        virtualBottomSite = sizeMatrix + 2;
     }
 
     // opens the site (row, col) if it is not open already
@@ -28,11 +28,12 @@ public class Percolation {
             matrix[row][col] = true;
             openSites += 1;
             int currSite = xyTo1D(row, col);
-            if (row == 1) {
-                g.union(currSite, virtualTopSite);
-            }
-            else if (row == sizeMatrix + 1) {
-                g.union(currSite, virtualBottomSite);
+            if (col > 0 && col < sizeMatrix + 1) {
+                if (row == 1) {
+                    g.union(currSite, virtualTopSite);
+                } else if (row == sizeMatrix - 2) {
+                    g.union(currSite, virtualBottomSite);
+                }
             }
             if (isOpen(row, col - 1)) { // left
                 int leftSite = xyTo1D(row, col - 1);
