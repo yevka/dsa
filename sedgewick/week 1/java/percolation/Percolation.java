@@ -1,14 +1,13 @@
+import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
-
 public class Percolation {
-    private int sizeMatrix;
-    private WeightedQuickUnionUF g;
+    private final int sizeMatrix;
+    private final WeightedQuickUnionUF g;
     private boolean[][] matrix;
     private int openSites;
-    private int[] rootNodes;
-    private int[] leafNodes;
-    private boolean isPercolate;
+    private int virtualTopSite;
+    private int virtualBottomSite;
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
@@ -18,15 +17,8 @@ public class Percolation {
         g = new WeightedQuickUnionUF(sizeMatrix * sizeMatrix);
         matrix = new boolean[sizeMatrix][sizeMatrix];
         openSites = 0;
-        rootNodes = new int[sizeMatrix - 2];
-        leafNodes = new int[sizeMatrix - 2];
-        int rootSite = xyTo1D(1, 1);
-        int leafSite = xyTo1D(sizeMatrix - 2, 1);
-        for(int j = 0;  j < sizeMatrix - 2; ++j) {
-            rootNodes[j] = rootSite++;
-            leafNodes[j] = leafSite++;
-        }
-        isPercolate = false;
+        virtualTopSite = 0;
+        virtualBottomSite = sizeMatrix + 1;
     }
 
     // opens the site (row, col) if it is not open already
@@ -36,6 +28,12 @@ public class Percolation {
             matrix[row][col] = true;
             openSites += 1;
             int currSite = xyTo1D(row, col);
+            if (row == 1) {
+                g.union(currSite, virtualTopSite);
+            }
+            else if (row == sizeMatrix + 1) {
+                g.union(currSite, virtualBottomSite);
+            }
             if (isOpen(row, col - 1)) { // left
                 int leftSite = xyTo1D(row, col - 1);
                 g.union(currSite, leftSite);
@@ -66,12 +64,7 @@ public class Percolation {
         checkIndex(row, col);
         if (isOpen(row, col)) {
             int currSite = xyTo1D(row, col);
-            for(int rootNodeId = 0;  rootNodeId < sizeMatrix - 2; ++rootNodeId) {
-                int rootNode = rootNodes[rootNodeId];
-                if (connected(currSite, rootNode)) {
-                    return true;
-                }
-            }
+            return g.find(currSite) == g.find(virtualTopSite);
         }
         return false;
     }
@@ -83,31 +76,32 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        if (isPercolate) // cached value
-            return true;
-        if (openSites < sizeMatrix - 2)
-            return false;
-
-        for(int leafNodeId = 0;  leafNodeId < sizeMatrix - 2; ++leafNodeId) {
-            if (!isOpen(sizeMatrix - 2, leafNodeId + 1))
-                continue;
-            int leafNode = leafNodes[leafNodeId];
-            for(int rootNodeId = 0;  rootNodeId < sizeMatrix - 2; ++rootNodeId) {
-                if (!isOpen(1, rootNodeId + 1))
-                    continue;
-                int rootNode = rootNodes[rootNodeId];
-                if (connected(leafNode, rootNode)) {
-                    isPercolate = true;
-                    return true;
-                }
-            }
-        }
-        return false;
+        return g.find(virtualTopSite) == g.find(virtualBottomSite);
     }
 
     // test client (optional)
     public static void main(String[] args) {
-
+        Percolation percolation = new Percolation(2);
+        percolation.open(1, 1);
+        if (!percolation.isOpen(1, 1)) {
+            StdOut.printf("test failed: percolation.isOpen(1, 1) != true");
+        }
+        if (!percolation.isFull(1, 1)) {
+            StdOut.printf("test failed: percolation.isOpen(1, 1) != true");
+        }
+        percolation.open(1, 2);
+        if (!percolation.isOpen(1, 2)) {
+            StdOut.printf("test failed: percolation.isOpen(1, 2) != true");
+        }
+        if (!percolation.isFull(1, 2)) {
+            StdOut.printf("test failed: percolation.isOpen(1, 2) != true");
+        }
+        if (percolation.numberOfOpenSites() != 2) {
+            StdOut.printf("test failed: percolation.numberOfOpenSites() != 2");
+        }
+        if (percolation.percolates()) {
+            StdOut.printf("test failed: percolation.percolates() != false");
+        }
     }
 
     private int xyTo1D(int x, int y) {
@@ -124,9 +118,4 @@ public class Percolation {
         if (col > sizeMatrix + 1)
             throw new IllegalArgumentException("col must be <= N");
     }
-
-    private boolean connected(int p, int q) {
-        return g.find(p) == g.find(q);
-    }
-
 }
