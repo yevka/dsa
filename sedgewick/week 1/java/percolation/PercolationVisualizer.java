@@ -75,14 +75,14 @@ public class PercolationVisualizer {
         Percolation percolation = new Percolation(n);
         draw(percolation, n);
         StdDraw.show();
-        StdDraw.pause(DELAY);
+        // StdDraw.pause(DELAY);
         while (!in.isEmpty()) {
             int i = in.readInt();
             int j = in.readInt();
             percolation.open(i, j);
             draw(percolation, n);
             StdDraw.show();
-            StdDraw.pause(DELAY);
+            // StdDraw.pause(DELAY);
         }
         System.out.println("the end");
     }
